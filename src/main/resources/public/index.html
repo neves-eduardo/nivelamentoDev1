@@ -12,10 +12,20 @@
     Evento: <br />
     <input type="text" id="evento" value="evento" />
     <br />
-    Convidados: <br> Nome: <br>
-    <input type="text" name="nome" value="convidado" />
-    <button onclick="return false;" >add</button>
+    Lista de convidados: <br>
+    <input type="text" id="nome_convidado" value="nome do convidado" />
+    <button onclick="ToList(); return false;" >add</button> <br>
+    <br> 
+    
+    <ul id="ulConvidados" style="list-style-type:disc;">
+        
+
+      </ul> 
+    <br>
+    Local: <br>
+    <input type="text" id="locale" value="local" />
     <br />
+    <br>
     <input onclick="postEvento();" type="submit" class></button>
   </form>
     <table id="eventosTable">
@@ -28,11 +38,26 @@
     </table>
 
     <script>
-      var list = [{}];
+      var list = [];
+      
       const host = "http://localhost:8080/api/eventos";
 
+
+
+      function ToList () {
+        list.push({nome: document.getElementById('nome_convidado').value});
+        console.log(list);
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(document.getElementById('nome_convidado').value);
+        node.appendChild(textnode);
+        document.getElementById("ulConvidados").appendChild(node);
+      }
+
       function postEvento() {
-        var evento = { nome:document.getElementById("evento").value};
+        var evento = { nome:document.getElementById("evento").value,
+                      convidados: list,
+                      local: document.getElementById("locale").value
+        };
 
         var xhr = new XMLHttpRequest();
         var json = JSON.stringify(evento);
@@ -65,19 +90,19 @@
               cell1.innerHTML = evento.id;
               
               cell2.innerHTML = evento.nome;
-              var lul = document.createElement("OL");
-              
+              var lul = document.createElement("UL");
+              cell3.appendChild(lul);
 
                 evento.convidados.forEach(convidado => {
-                var node = document.createElement("IL")
+                var node = document.createElement("LI")
                 var textNode = document.createTextNode(convidado.nome);
                 var zuc = node.appendChild(textNode);
-                lul.appendChild(zuc);
+                cell3.appendChild(zuc);
                 
                 
               });
               cell4.innerHTML = evento.local;
-              cell3.appendChild(lul);
+              
               
               
               
