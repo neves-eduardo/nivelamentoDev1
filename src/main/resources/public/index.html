@@ -10,10 +10,10 @@
   <body>
     <form>
     Evento: <br />
-    <input type="text" id="evento" value="evento" />
+    <input type="text" id="evento" value="evento" required />
     <br />
     Lista de convidados: <br>
-    <input type="text" id="nome_convidado" value="nome do convidado" />
+    <input type="text" id="nome_convidado" value="nome do convidado" required />
     <button onclick="ToList(); return false;" >add</button> <br>
     <br> 
     
@@ -23,18 +23,13 @@
       </ul> 
     <br>
     Local: <br>
-    <input type="text" id="locale" value="local" />
+    <input type="text" id="locale" value="local" required/>
     <br />
     <br>
     <input onclick="postEvento();" type="submit" class></button>
   </form>
     <table id="eventosTable">
-      <tr>
-        <th>ID</th>
-        <th>EVENTO</th>
-        <th>CONVIDADOS</th>
-        <th>LOCAL</th>
-  
+
     </table>
 
     <script>
@@ -42,7 +37,17 @@
       
       const host = "http://localhost:8080/api/eventos";
 
-
+      
+      function deleteById (id) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("DELETE",`http://localhost:8080/api/eventos/` + id, true);
+        xhr.onload = function() {
+          getAll(host);
+        };
+        xhr.send(null)
+        
+      }
+      
 
       function ToList () {
         list.push({nome: document.getElementById('nome_convidado').value});
@@ -77,12 +82,27 @@
           // Begin accessing JSON data here
           var eventos = JSON.parse(this.response);
           if (request.status >= 200 && request.status < 400) {
+            var myNode = document.getElementById("eventosTable");
+            while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+            }
+            hrow = myNode.insertRow(0);
+            var hcell1 = hrow.insertCell(0);
+            var hcell2 = hrow.insertCell(1);
+            var hcell3 = hrow.insertCell(2);
+            var hcell4 = hrow.insertCell(3);
+            hcell1.innerHTML = "ID";
+            hcell2.innerHTML = "EVENTO";
+            hcell3.innerHTML = "CONVIDADOS";
+            hcell4.innerHTML = "LOCAL";
             eventos.forEach(evento => {
               console.log(evento.nome);
               console.log("a");
               var texto = document.createTextNode(evento.nome);
               var table = document.getElementById("eventosTable");
+              var btn = document.createElement("button");
               var row = table.insertRow(-1);
+              row.setAttribute("id",evento.id);
               var cell1 = row.insertCell(0);
               var cell2 = row.insertCell(1);
               var cell3 = row.insertCell(2);
@@ -102,8 +122,9 @@
                 
               });
               cell4.innerHTML = evento.local;
-              
-              
+              row.appendChild(btn);
+              btn.innerHTML = "excluir";
+              btn.setAttribute("onclick","deleteById(parseInt(parentNode.id));");
               
               
             });
@@ -113,6 +134,7 @@
       }
 
       getAll(host);
+      //deleteById(2);
 
       //evento.convidados.forEach(convidado => {
       //console.log(convidado.nome);
