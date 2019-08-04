@@ -1,0 +1,47 @@
+<html lang="en">
+  <head>
+    <script></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form>
+      <div><label> Evento </label> <input /></div>
+      <div><label>Local</label> <input /></div>
+      <div>
+        <label> Nome </label> <input /> <button>Adicionar Convidado</button>
+      </div>
+
+      <button>Submit</button>
+
+      <table id="eventosTable"></table>
+    </form>
+    <script>
+      const host = "http://localhost:8080/api/eventos";
+
+      function getAll(host) {
+        var request = new XMLHttpRequest();
+        request.open("GET", host, true);
+        request.onload = function() {
+          // Begin accessing JSON data here
+          var data = JSON.parse(this.response);
+          if (request.status >= 200 && request.status < 400) {
+            data.forEach(evento => {
+              console.log(evento.nome);
+              evento.convidados.forEach(convidado => {
+                console.log(convidado.nome);
+                var texto = document.createTextNode(convidado.nome);
+                document.getElementById("convidadosbox").appendChild(texto);
+              });
+            });
+          }
+        };
+        request.send();
+      }
+
+      getAll(host);
+    </script>
+  </body>
+</html>
