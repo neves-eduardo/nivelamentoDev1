@@ -17,23 +17,24 @@
     <button onclick="ToList(); return false;" >add</button> <br>
     <br> 
     
-    <ul id="ulConvidados" style="list-style-type:disc;">
-        
-
-      </ul> 
+    <ul id="ulConvidados" style="list-style-type:disc;"></ul> 
     <br>
     Local: <br>
     <input type="text" id="locale" value="local" required/>
     <br />
     <br>
-    <input onclick="postEvento();" type="submit" class></button>
+    <input onclick="if (verificaUl()==true) {
+      postEvento()
+    };" type="submit" class></button>
   </form>
     <table id="eventosTable">
 
     </table>
 
     <script>
+
       var list = [];
+      
       
       const host = "http://localhost:8080/api/eventos";
 
@@ -50,14 +51,39 @@
       
 
       function ToList () {
-        list.push({nome: document.getElementById('nome_convidado').value});
+        
+        
         console.log(list);
+
+        var ver =true;
+        list.forEach(convidado => {
+          if(convidado.nome == document.getElementById('nome_convidado').value) {
+            ver = false;
+          }
+                
+                
+              });
+        if (ver){list.push({nome: document.getElementById('nome_convidado').value});
         var node = document.createElement("LI");
+        
         var textnode = document.createTextNode(document.getElementById('nome_convidado').value);
-        node.appendChild(textnode);
-        document.getElementById("ulConvidados").appendChild(node);
+        il = node.appendChild(textnode);
+        var btn = document.createElement("button");
+        node.appendChild(btn);
+        btn.innerHTML = "excluir";
+        btn.setAttribute("onclick","");
+        ul = document.getElementById("ulConvidados").appendChild(node);
+        } else {alert("Nomes repetidos")}
+      }
+      function verificaUl() {
+        if(document.getElementById("ulConvidados").hasChildNodes()) {
+
+          return true
+        } else { alert("lista de convidados vazia");return false;}
       }
 
+
+      
       function postEvento() {
         var evento = { nome:document.getElementById("evento").value,
                       convidados: list,
