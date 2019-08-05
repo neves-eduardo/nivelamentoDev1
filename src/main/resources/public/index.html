@@ -10,17 +10,17 @@
   <body>
     <form>
     Evento: <br />
-    <input type="text" id="evento" value="evento" required />
+    <input type="text" id="evento" placeholder="evento" required />
     <br />
     Lista de convidados: <br>
-    <input type="text" id="nome_convidado" value="nome do convidado" required />
+    <input type="text" id="nome_convidado" placeholder="nome do convidado" required />
     <button onclick="ToList(); return false;" >add</button> <br>
     <br> 
     
     <ul id="ulConvidados" style="list-style-type:disc;"></ul> 
     <br>
     Local: <br>
-    <input type="text" id="locale" value="local" required/>
+    <input type="text" id="locale" placeholder="local" required/>
     <br />
     <br>
     <input onclick="if (verificaUl()==true) {
