@@ -1,120 +1,68 @@
-var list = [];
+//document.getElementById("getEventos").addEventListener("click", getEventos);
+document.getElementById("addEvento").addEventListener("submit", postEvento);
+document.getElementById("addConvidado").addEventListener("click", addConvidado);
+let convidados = [];
+getEventos();
 
-const host = "http://localhost:8080/api/eventos";
-
-function deleteById(id) {
-  var xhr = new XMLHttpRequest();
-  xhr.open("DELETE", `http://localhost:8080/api/eventos/` + id, true);
-  xhr.onload = function() {
-    getAll(host);
-  };
-  xhr.send(null);
+function addConvidado() {
+  convidados.push({ nome: document.getElementById("convidados").value });
+  carregaLista(convidados);
 }
-
-function ToList() {
-  console.log(list);
-
-  var ver = true;
-  list.forEach(convidado => {
-    if (convidado.nome == document.getElementById("nome_convidado").value) {
-      ver = false;
-    }
+function carregaLista(convidados) {
+  let outputC = "";
+  convidados.forEach(function(convidado) {
+    outputC += `<li>${convidado.nome}</li>`;
   });
-  if (ver) {
-    list.push({ nome: document.getElementById("nome_convidado").value });
-    var node = document.createElement("LI");
-
-    var textnode = document.createTextNode(
-      document.getElementById("nome_convidado").value
-    );
-    il = node.appendChild(textnode);
-    var btn = document.createElement("button");
-    node.appendChild(btn);
-    btn.innerHTML = "excluir";
-    btn.setAttribute("onclick", "");
-    ul = document.getElementById("ulConvidados").appendChild(node);
-  } else {
-    alert("Nomes repetidos");
-  }
-}
-function verificaUl() {
-  if (document.getElementById("ulConvidados").hasChildNodes()) {
-    return true;
-  } else {
-    alert("lista de convidados vazia");
-    return false;
-  }
+  document.getElementById("listaConvidados").innerHTML = outputC;
 }
 
-function postEvento() {
-  var evento = {
-    nome: document.getElementById("evento").value,
-    convidados: list,
-    local: document.getElementById("locale").value
-  };
-
-  var xhr = new XMLHttpRequest();
-  var json = JSON.stringify(evento);
-  xhr.open("POST", host, false);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onload = function() {
-    getAll();
-  };
-  xhr.send(json);
+function deleteEvento(id) {
+  fetch(`http://localhost:8080/api/eventos/${id}`, {
+    method: "DELETE"
+  }).then(getEventos);
 }
 
-function getAll(host) {
-  var request = new XMLHttpRequest();
-  request.open("GET", host, true);
-  request.onload = function() {
-    // Begin accessing JSON data here
-    var eventos = JSON.parse(this.response);
-    if (request.status >= 200 && request.status < 400) {
-      var myNode = document.getElementById("eventosTable");
-      while (myNode.firstChild) {
-        myNode.removeChild(myNode.firstChild);
-      }
-      hrow = myNode.insertRow(0);
-      var hcell1 = hrow.insertCell(0);
-      var hcell2 = hrow.insertCell(1);
-      var hcell3 = hrow.insertCell(2);
-      var hcell4 = hrow.insertCell(3);
-      hcell1.innerHTML = "ID";
-      hcell2.innerHTML = "EVENTO";
-      hcell3.innerHTML = "CONVIDADOS";
-      hcell4.innerHTML = "LOCAL";
-      eventos.forEach(evento => {
-        console.log(evento.nome);
-        console.log("a");
-        var texto = document.createTextNode(evento.nome);
-        var table = document.getElementById("eventosTable");
-        var btn = document.createElement("button");
-        var row = table.insertRow(-1);
-        row.setAttribute("id", evento.id);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        var cell4 = row.insertCell(3);
-        cell1.innerHTML = evento.id;
+function postEvento(e) {
+  e.preventDefault();
+  let nome = document.getElementById("eventoNome").value;
+  let local = document.getElementById("local").value;
 
-        cell2.innerHTML = evento.nome;
-        var lul = document.createElement("UL");
-        cell3.appendChild(lul);
+  fetch("http://localhost:8080/api/eventos", {
+    method: "POST",
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({ nome: nome, convidados: convidados, local: local })
+  })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .then(getEventos);
+}
 
-        evento.convidados.forEach(convidado => {
-          var node = document.createElement("LI");
-          var textNode = document.createTextNode(convidado.nome);
-          var zuc = node.appendChild(textNode);
-          cell3.appendChild(zuc);
+function getEventos() {
+  fetch("http://localhost:8080/api/eventos")
+    .then(res => res.json())
+    .then(eventos => {
+      let output =
+        "<tr><td>ID</td><td>NOME</td><td>CONVIDADOS</td><td>LOCAL</td></tr>";
+
+      eventos.forEach(function(evento) {
+        let outputConvidados = "";
+        id = evento.id;
+        evento.convidados.forEach(function(convidado) {
+          outputConvidados += `<li>${convidado.nome}</li>`;
         });
-        cell4.innerHTML = evento.local;
-        row.appendChild(btn);
-        btn.innerHTML = "excluir";
-        btn.setAttribute("onclick", "deleteById(parseInt(parentNode.id));");
+        output += `
+        <tr>
+          <td>${evento.id}</td>
+          <td>${evento.nome}</td>
+          <td><ul>${outputConvidados}</ul></td>
+          <td>${evento.local}</td>
+          <td><button onclick="deleteEvento(${id})">Excluir</button></td>
+        </tr>
+      `;
       });
-    }
-  };
-  request.send();
+      document.getElementById("outputEventos").innerHTML = output;
+    });
 }
-
-getAll(host);

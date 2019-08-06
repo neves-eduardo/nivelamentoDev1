@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
     <title>Document</title>
   </head>
   <body>
-    <form>
-    Evento: <br />
-    <input type="text" id="evento" placeholder="evento" required />
-    <br />
-    Lista de convidados: <br>
-    <input type="text" id="nome_convidado" placeholder="nome do convidado" required />
-    <button onclick="ToList(); return false;" >add</button> <br>
-    <br> 
-    
-    <ul id="ulConvidados" style="list-style-type:disc;"></ul> 
-    <br>
-    Local: <br>
-    <input type="text" id="locale" placeholder="local" required/>
-    <br />
-    <br>
-    <input onclick="if (verificaUl()==true) {
-      postEvento()
-    };" type="submit" class></button>
-  </form>
-    <table id="eventosTable">
+    <form id="addEvento">
+      Nome: <br />
+      <input
+        id="eventoNome"
+        type="text"
+        placeholder="Nome do evento"
+        required
+      />
+      <br />
+      Convidados <br />
+      <input
+        id="convidados"
+        type="text"
+        placeholder="nome do convidado"
+        required
+      />
+      <button id="addConvidado" onclick="return false;">Adicionar</button>
+      <br />
+      <ul id="listaConvidados"></ul>
+      Local <br />
+      <input id="local" type="text" placeholder="Local do Evento" required />
+      <br />
+      <br />
+      <input type="submit" value="Adicionar Evento" />
+    </form>
 
-    </table>
-
-    <script src="script.js"></script>
+    <br />
+    <table id="outputEventos"></table>
   </body>
+  <script src="script.js"></script>
 </html>
