@@ -58,8 +58,24 @@ function postEvento(e) {
     .then(getEventos)
     .then(clearForm);
 }
+//usar  document get by id com template string para achar a id e os valores dos campos
+// passar lista de convidados para a string lista com get?
 
-function updateEvento(e, id) {
+function gerarEdicao(id) {
+  fetch(`http://localhost:8080/api/eventos/${id}`)
+    .then(res => res.json())
+    .then(evento => {
+      let outputConvidados = "";
+      convidados = evento.convidados;
+      document.getElementById("eventoNome").value = evento.nome;
+      document.getElementById("local").value = evento.local;
+      evento.convidados.forEach(function(convidado) {
+        outputConvidados += `<li>${convidado.nome}</li>`;
+      });
+      document.getElementById("listaConvidados").innerHTML = outputConvidados;
+    });
+}
+function putEvento(e, id) {
   e.preventDefault();
   let nome = document.getElementById("eventoNome").value;
   let local = document.getElementById("local").value;
@@ -82,6 +98,8 @@ function clearForm() {
   document.getElementById("eventoNome").value = "";
   document.getElementById("convidados").value = "";
   document.getElementById("local").value = "";
+  document.getElementById("listaConvidados").innerHTML = "";
+  convidados = [];
 }
 
 function getEventos() {
@@ -104,6 +122,7 @@ function getEventos() {
           <td id="convidados_${evento.id}"><ul>${outputConvidados}</ul></td>
           <td id="local_${evento.id}">${evento.local}</td>
           <td><button onclick="deleteEvento(${id})">Excluir</button></td>
+          <td><button onclick="gerarEdicao(${id})">Editar</button></td>
         </tr>
       `;
       });
