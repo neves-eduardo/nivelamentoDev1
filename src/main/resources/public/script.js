@@ -1,4 +1,5 @@
 //document.getElementById("getEventos").addEventListener("click", getEventos);
+let editar = false;
 document.getElementById("addEvento").addEventListener("submit", postEvento);
 document.getElementById("addConvidado").addEventListener("click", addConvidado);
 let convidados = [];
@@ -65,8 +66,11 @@ function gerarEdicao(id) {
   fetch(`http://localhost:8080/api/eventos/${id}`)
     .then(res => res.json())
     .then(evento => {
+      editar = true;
       let outputConvidados = "";
       convidados = evento.convidados;
+      document.getElementById("idEvento").setAttribute("type", "text");
+      document.getElementById("idEvento").value = evento.id;
       document.getElementById("eventoNome").value = evento.nome;
       document.getElementById("local").value = evento.local;
       evento.convidados.forEach(function(convidado) {
@@ -121,8 +125,8 @@ function getEventos() {
           <td id="nome_${evento.id}">${evento.nome}</td>
           <td id="convidados_${evento.id}"><ul>${outputConvidados}</ul></td>
           <td id="local_${evento.id}">${evento.local}</td>
-          <td><button onclick="deleteEvento(${id})">Excluir</button></td>
-          <td><button onclick="gerarEdicao(${id})">Editar</button></td>
+          <td><button onclick="deleteEvento(${id})"class="btn btn-danger">Excluir</button></td>
+          <td><button onclick="gerarEdicao(${id})"class="btn btn-warning">Editar</button></td>
         </tr>
       `;
       });

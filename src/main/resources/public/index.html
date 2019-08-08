@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>Document</title>
+    <title>CRUD Eventos</title>
   </head>
   <body>
     <form id="addEvento">
+      <input id="idEvento" type="hidden" readonly /> <br />
       Nome: <br />
       <input
         id="eventoNome"
@@ -19,18 +24,24 @@
       <br />
       Convidados <br />
       <input id="convidados" type="text" placeholder="nome do convidado" />
-      <button id="addConvidado" onclick="return false;">Adicionar</button>
+      <button
+        id="addConvidado"
+        onclick="return false;"
+        class="btn btn-secondary"
+      >
+        Adicionar
+      </button>
       <br />
       <ul id="listaConvidados"></ul>
       Local <br />
       <input id="local" type="text" placeholder="Local do Evento" required />
       <br />
       <br />
-      <input type="submit" value="Adicionar Evento" />
+      <input type="submit" value="Adicionar Evento" class="btn btn-primary" />
     </form>
 
     <br />
-    <table id="outputEventos"></table>
+    <table id="outputEventos" class="table"></table>
   </body>
   <script src="script.js"></script>
 </html>
